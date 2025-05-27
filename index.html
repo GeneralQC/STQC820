@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Smart FEED ST-FO-820</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="stylelogin.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Prompt&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="glass-box fade" id="loginBox">
+      <h2>Smart FEED ST-FO-820</h2>
+      <input type="text" id="loginUser" placeholder="Enter your username">
+      <select id="loginBranch" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;">
+        <option value="">-- เลือกสาขา --</option>
+         <option value="BKF">BKF</option>
+        <option value="BPF">BPF</option>
+        <option value="KBF">KBF</option>
+        <option value="KKF">KKF</option>
+        <option value="KRF">KRF</option>
+        <option value="KTF">KTF</option>
+        <option value="LPF">LPF</option>
+        <option value="PLF">PLF</option>
+        <option value="PTF">PTF</option>
+        <option value="RBF">RBF</option>
+        <option value="SKF">SKF</option>
+        <option value="SRF">SRF</option>
+        <option value="TRF">TRF</option>
+      </select>
+      <button onclick="handleLogin()">Login</button>
+      <div class="link">
+        <a href="#" onclick="showBox('registerBox')">Register</a>
+      </div>
+    </div>
+
+    <div class="glass-box hidden fade" id="registerBox">
+      <h2>📘 Register</h2>
+      <input type="text" id="regUser" placeholder="Username">
+      <input type="email" id="regEmail" placeholder="Email">
+      <select id="regBranch" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;">
+        <option value="">-- เลือกสาขา --</option>
+        <option value="BKF">BKF</option>
+        <option value="BPF">BPF</option>
+        <option value="KBF">KBF</option>
+        <option value="KKF">KKF</option>
+        <option value="KRF">KRF</option>
+        <option value="KTF">KTF</option>
+        <option value="LPF">LPF</option>
+        <option value="PLF">PLF</option>
+        <option value="PTF">PTF</option>
+        <option value="RBF">RBF</option>
+        <option value="SKF">SKF</option>
+        <option value="SRF">SRF</option>
+        <option value="TRF">TRF</option>
+      </select>
+      <select id="regPermission" style="width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;">
+        <option value="User" selected>👤 User</option>
+        <option value="Admin"> 🧑‍💻Admin</option>
+        <option value="AV/AVP"> 🎖️VP/AVP</option>
+      </select>
+      <button onclick="handleRegister()">Register</button>
+
+      <div class="link">
+        <a href="#" onclick="showBox('loginBox')">← Back to Login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Loader แยกต่างหาก ไม่ถูกรบกวนด้วย flex ของ container -->
+  <div id="loaderOverlay" class="hidden">
+    <div class="loader-box">
+      <div class="progress-text" id="progressText">0%</div>
+      <div class="progress-circle"></div>
+    </div>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxN0bT5jP0AS-4SYQNVw69f-enB2cYEJ7A8N4cutH6kCagxoiv0-xaFzPYSu6T3nR7b/exec";
+
+    function showBox(boxId) {
+      document.querySelectorAll('.glass-box').forEach(box => {
+        box.classList.add('hidden');
+      });
+      document.getElementById(boxId).classList.remove('hidden');
+    }
+
+    function handleLogin() {
+      const username = document.getElementById('loginUser').value.trim();
+      const branch = document.getElementById('loginBranch').value;
+
+      if (!username || !branch) {
+        alert("⚠️ กรุณากรอก username และเลือกสาขา");
+        return;
+      }
+
+      // ✅ รีเซต progress ก่อนแสดง
+      document.getElementById("progressText").textContent = "0%";
+      document.getElementById("loaderOverlay").classList.remove("hidden");
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 5) + 1;
+        if (progress > 100) progress = 100;
+        document.getElementById("progressText").textContent = progress + "%";
+
+        if (progress >= 100) {
+          clearInterval(interval);
+
+          // ✅ ทำ Login fetch
+          fetch(scriptURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `mode=loginOnly&username=${encodeURIComponent(username)}&branch=${encodeURIComponent(branch)}`
+          })
+            .then(res => res.text())
+            .then(data => {
+              console.log("Response from server:", data);
+
+              if (data.startsWith("✅ Login successful|")) {
+                try {
+                  const jsonString = data.split("✅ Login successful|")[1];
+                  const json = JSON.parse(jsonString);
+
+                  localStorage.setItem("username", username);
+                  localStorage.setItem("branch", branch);
+                  localStorage.setItem("permission", json.permission || "-");
+
+                  window.location.href = "Home.html";
+                } catch (err) {
+                  alert("❌ ไม่สามารถอ่านข้อมูลผู้ใช้: " + err);
+                }
+              } else {
+                alert(data);
+                document.getElementById("loaderOverlay").classList.add("hidden");
+              }
+            })
+        }
+      }, 35);
+    }
+
+    function handleRegister() {
+      const username = document.getElementById('regUser').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const branch = document.getElementById('regBranch').value;
+      const permission = document.getElementById('regPermission').value;
+
+      if (!username || !email || !branch || !permission) {
+        alert("⚠️ กรุณากรอก Username, Email และเลือกสาขา");
+        return;
+      }
+      console.log("🚀 Permission:", permission);
+      fetch(scriptURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `mode=register&username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&branch=${encodeURIComponent(branch)}&permission=${encodeURIComponent(permission)}`
+      })
+        .then(res => res.text())
+        .then(data => {
+          alert(data);
+          if (data.includes("✅")) {
+            showBox('loginBox');
+          }
+        })
+        .catch(err => alert("❌ Error: " + err));
+    }
+  </script>
+
+</body>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FEED ST-FO-820 ฟอร์มแผนอาหาร</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h3>เมนู</h3>
+        <ul>
+            <li class="has-submenu">📝 เมนูบันทึกข้อมูล
+                <ul class="submenu">
+                    <li onclick="showForm('chicken')">🐔 อาหารไก่</li>
+                    <li onclick="showForm('pig')">🐷 อาหารสุกร</li>
+                    <li onclick="showForm('duck')">🦆 อาหารเป็ด</li>
+                    <li onclick="showForm('quail')">🪿 อาหารนกกระทา</li>
+                    <li onclick="showForm('rabbit')">🐰 อาหารกระต่าย</li>
+                    <li onclick="showForm('cow')">🐄 อาหารโค</li>
+                    <li onclick="showForm('ostrich')">🦃 อาหารนกกระจอกเทศ</li>
+                    <li onclick="showForm('goat')">🐐 อาหารแพะ</li>
+                    <li onclick="showForm('sheep')">🐑 อาหารแกะ</li>
+                    <li onclick="showForm('cricket')">🦗 อาหารจิ้งหรีด</li>
+                </ul>
+            </li>
+            <li class="has-submenu">📊 เมนูตรวจสถานะแผน
+                <ul class="submenu">
+                    <li onclick="showForm('cricket')">ตารางตรวจสอบสถานะ Request แผน</li>
+
+                </ul>
+            </li>
+
+            <li class="has-submenu" id="approveMenu">
+                ✅ เมนู Approve
+                <ul class="submenu">
+                    <li onclick="showForm('approve')">📋 ตาราง Approve Request</li>
+                </ul>
+            </li>
+        </ul>
+        <div class="user-info">
+            <div class="user-line">🙍‍♂️ ผู้ใช้งาน: <span id="currentUser">-</span></div>
+            <div class="user-line">🏭 สาขา: <span id="currentBranch">-</span></div>
+            <div class="user-line">🛡️ สิทธิ์: <span id="currentpermission">-</span></div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+    </div>
+
+
+
+
+
+
+
+    <!-- ไก่ -->
+    <div class="main-content">
+        <div id="form-chicken" class="form-container">
+            <h2>ฟอร์มแผนตรวจสอบอาหารไก่</h2>
+            <form id="feedForm">
+
+                <!-- Section: กลุ่มข้อมูลทั่วไป -->
+                <div class="form-row">
+                    <div class="form-group group-20">
+                        <label>ลำดับ</label>
+                        <input type="number" name="index" readonly>
+                    </div>
+                    <div class="form-group group-35">
+                        <label>กลุ่มอาหาร</label>
+                        <select name="group">
+                            <option value="">-- เลือก --</option>
+                            <option>ไก่เนื้อ,สัปดาห์</option>
+                            <option>ไก่เนื้อ,เดือน</option>
+                            <option>ไก่เนื้อ,รวมอายุไก่</option>
+                            <option>ไก่เนื้อ,สุ่มฟีด</option>
+                        </select>
+                    </div>
+                    <div class="form-group group-45">
+                        <label>รหัสอาหาร</label>
+                        <select name="code[]" class="multi-select" multiple>
+                            <option>531</option>
+                            <option>532</option>
+                            <option>531N</option>
+                            <option>532N</option>
+                            <option>533N</option>
+                            <option>510S</option>
+                            <option>511</option>
+                            <option>511S</option>
+
+
+
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section: ความถี่การตรวจวิเคราะห์ (หัวข้อ 4–15) -->
+                <div class="form-section-title">ความถี่การตรวจวิเคราะห์</div>
+                <div class="form-row">
+                    <div class="form-group"><label>M</label><select name="m">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>CP</label><select name="cp">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>FAT</label><select name="fat">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>FIB</label><select name="fib">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>MINERAL</label><select name="mineral">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>HEAVY METAL</label><select name="heavy">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>MYCO-T</label><select name="myco">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>As</label><select name="as">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>Hg(S)</label><select name="hg">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>GMO</label><select name="gmo">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>COC</label><select name="coc">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>A-biotic</label><select name="abiotic">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                </div>
+
+                <!--  Section: หัวข้อพิเศษ (PEST, Campylobacter, LAB, Sal) -->
+                <div class="form-section-title">หัวข้อพิเศษ (ระบุความถี่และรายละเอียด)</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>PEST</label>
+                        <div class="flex-double">
+                            <div><select name="pest_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="pest_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Campylobacter</label>
+                        <div class="flex-double">
+                            <div><select name="campy_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="campy_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>LAB (Bacillus sp, etc.)</label>
+                        <div class="flex-double">
+                            <div><select name="lab_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="lab_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Sal (QS)</label>
+                        <div class="flex-double">
+                            <div><select name="sal_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="sal_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section-title">หมายเหตุ Entero, Sal, APC, TMC, CLOS, QT, C-Perfringens</div>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1 1 100%;">
+                        <label>รายละเอียด</label>
+                        <textarea name="enterosal_detail" rows="2"
+                            placeholder="รายละเอียดอื่น ๆ เพิ่มเติม..."></textarea>
+
+                    </div>
+                </div>
+
+
+                <button type="submit">บันทึกข้อมูล</button>
+            </form>
+          
+        </div>
+
+
+
+        <!-- สุกร -->
+
+        <div id="form-pig" class="form-container">
+            <h2>ฟอร์มแผนตรวจสอบอาหารสุกร</h2>
+            <form id="feedForm">
+
+                <!-- Section: กลุ่มข้อมูลทั่วไป -->
+                <div class="form-row">
+                    <div class="form-group group-20">
+                        <label>ลำดับ</label>
+                        <input type="number" name="index" readonly>
+                    </div>
+                    <div class="form-group group-35">
+                        <label>กลุ่มอาหาร</label>
+                        <select name="group">
+                            <option value="">-- เลือก --</option>
+                            <option>หัวอาหารสุกร</option>
+                            <option>สุกร,เลี้ยงสาว</option>
+                            <option>สุกร,นม</option>
+                            <option>สุกร,อ่อน</option>
+                            <option>สุกร,รุ่น</option>
+                            <option>สุกร,ขุน</option>
+                            <option>สุกรพันธุ์,รุ่น</option>
+                            <option>สุกรพันธุ์,ระยะตั้งท้อง</option>
+                            <option>สุกรพันธุ์,ระยะให้นม</option>
+                        </select>
+                    </div>
+                    <div class="form-group group-45">
+                        <label>รหัสอาหาร</label>
+                        <select name="code[]" class="multi-select" multiple>
+                            <option>150S</option>
+                            <option>151</option>
+                            <option>151S</option>
+                            <option>152</option>
+                            <option>153</option>
+                            <option>156</option>
+                            <option>SK-S</option>
+                            <option>550LAC</option>
+                            <option>550KP</option>
+                            <option>6550KPS</option>
+                            <option>PREWEAN</option>
+                            <option>550</option>
+                            <option>550F</option>
+                            <option>550-KN</option>
+                            <option>550PNP</option>
+                            <option>550RAI</option>
+
+
+
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section: ความถี่การตรวจวิเคราะห์ (หัวข้อ 4–15) -->
+                <div class="form-section-title">ความถี่การตรวจวิเคราะห์</div>
+                <div class="form-row">
+                    <div class="form-group"><label>M</label><select name="m">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>CP</label><select name="cp">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>FAT</label><select name="fat">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>FIB</label><select name="fib">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>MINERAL</label><select name="mineral">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>HEAVY METAL</label><select name="heavy">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>MYCO-T</label><select name="myco">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>As</label><select name="as">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>Hg(S)</label><select name="hg">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>GMO</label><select name="gmo">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>COC</label><select name="coc">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                    <div class="form-group"><label>A-biotic</label><select name="abiotic">
+                            <option>--</option>
+                            <option>1/W</option>
+                            <option>1/M</option>
+                            <option>1/Y</option>
+                        </select></div>
+                </div>
+
+                <!--  Section: หัวข้อพิเศษ (PEST, Campylobacter, LAB, Sal) -->
+                <div class="form-section-title">หัวข้อพิเศษ (ระบุความถี่และรายละเอียด)</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>PEST</label>
+                        <div class="flex-double">
+                            <div><select name="pest_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="pest_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Campylobacter</label>
+                        <div class="flex-double">
+                            <div><select name="campy_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="campy_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>LAB (Bacillus sp, etc.)</label>
+                        <div class="flex-double">
+                            <div><select name="lab_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="lab_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Sal (QS)</label>
+                        <div class="flex-double">
+                            <div><select name="sal_freq">
+                                    <option>--</option>
+                                    <option>1/W</option>
+                                    <option>1/M</option>
+                                    <option>1/Y</option>
+                                </select></div>
+                            <div><input type="text" name="sal_text" placeholder="รายละเอียด"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section-title">หมายเหตุ Entero, Sal, APC, TMC, CLOS, QT, C-Perfringens</div>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 1 1 100%;">
+                        <label>รายละเอียด</label>
+                        <textarea name="enterosal_detail" rows="2"
+                            placeholder="รายละเอียดอื่น ๆ เพิ่มเติม..."></textarea>
+
+                    </div>
+                </div>
+
+                <button type="submit">บันทึกข้อมูล</button>
+            </form>
+        </div>
+
+
+
+
+
+        <div id="form-duck" class="form-container" style="display:none">...ฟอร์มเป็ด...</div>
+        <div id="form-quail" class="form-container" style="display:none">...ฟอร์มนกกระทา...</div>
+        <div id="form-rabbit" class="form-container" style="display:none">...ฟอร์มกระต่าย...</div>
+        <div id="form-cow" class="form-container" style="display:none">...ฟอร์มโค...</div>
+        <div id="form-ostrich" class="form-container" style="display:none">...ฟอร์มนกกระจอกเทศ...</div>
+        <div id="form-goat" class="form-container" style="display:none">...ฟอร์มแพะ...</div>
+        <div id="form-sheep" class="form-container" style="display:none">...ฟอร์มแกะ...</div>
+
+
+        <div id="form-cricket" class="form-container" style="display:none">
+            <h2>ตารางตรวจสอบสถานะ Request แผน</h2>
+
+            <div style="display: flex; flex-direction: column; gap: 1px; margin-bottom: 5px;">
+                <!-- แถวบน: ช่องกรอกและเลือก -->
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" id="filterUsername" placeholder="👤 ผู้ใช้งาน"
+                        style="height: 36px; padding: 6px 12px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; width: 200px;">
+
+                    <select id="filterType"
+                        style="height: 36px; padding: 6px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; width: 180px;">
+                        <option value="">-- ทุกประเภท --</option>
+                        <option value="CHICKEN">CHICKEN</option>
+                        <option value="PIG">PIG</option>
+                        <option value="DUCK">DUCK</option>
+                    </select>
+                </div>
+
+                <!-- แถวล่าง: ปุ่ม -->
+                <div>
+                    <button onclick="applyFilters()" style="
+      height: 36px;
+      padding: 6px 10px;
+      font-size: 14px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 1px;
+      cursor: pointer;
+    ">
+                        🔍 กรองข้อมูล
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table id="cricketTable" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr id="cricketHeader"></tr>
+                        </thead>
+                        <tbody id="cricketTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ฟอม approve -->
+        <div id="form-approve" class="form-container" style="display: none;">
+            <h2>เมนู Approve Request แผน</h2>
+            <div class="table-wrapper"> 
+                <table id="approveTable">
+                    <thead>
+                        <tr id="approveHeader"></tr>
+                    </thead>
+                    <tbody id="approveTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+    </div>
+
+    <script src="main.js"></script>
+
+</body>
+
+</html>
