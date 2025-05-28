@@ -40,9 +40,22 @@
             <li class="has-submenu" id="approveMenu">
                 ✅ เมนู Approve
                 <ul class="submenu">
-                    <li onclick="showForm('approve')">📋 ตาราง Approve Request</li>
+                    <li onclick="showForm('approve')">ตาราง Approve Request</li>
                 </ul>
             </li>
+
+            <li class="has-submenu" id="calendarMenu">
+
+                🗓️ ปฏิทินจัดการแผนส่งตัวอย่างวิเคราห์
+                <ul class="submenu">
+                    <li onclick="showForm('calendar')">แผนส่งตัวอย่างวิเคราะห์</li>
+
+                </ul>
+            </li>
+
+
+
+
         </ul>
         <div class="user-info">
             <div class="user-line">🙍‍♂️ ผู้ใช้งาน: <span id="currentUser">-</span></div>
@@ -59,8 +72,20 @@
 
 
 
+
     <!-- ไก่ -->
     <div class="main-content">
+
+
+        <div id="form-calendar-container" class="form-container" style="display: none;">
+            <h2 style="margin-top: 0;">📅 แผนส่งตัวอย่างวิเคราะห์</h2>
+            <iframe id="form-calendar"
+                style="width: 98%; height: 90vh; border: none; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1);"
+                src="https://script.google.com/macros/s/AKfycbxfM6FeXFNiNhMTpNvAvgZyFcIpi16BQvkN5ZnDJAvtW64ZD-kRyLkgNuSH8inuL2OR/exec"
+                frameborder="0" allowfullscreen>
+            </iframe>
+        </div>
+
         <div id="form-chicken" class="form-container">
             <h2>ฟอร์มแผนตรวจสอบอาหารไก่</h2>
             <form id="feedForm">
@@ -241,7 +266,7 @@
 
                 <button type="submit">บันทึกข้อมูล</button>
             </form>
-          
+
         </div>
 
 
@@ -505,7 +530,7 @@
         <!-- ฟอม approve -->
         <div id="form-approve" class="form-container" style="display: none;">
             <h2>เมนู Approve Request แผน</h2>
-            <div class="table-wrapper"> 
+            <div class="table-wrapper">
                 <table id="approveTable">
                     <thead>
                         <tr id="approveHeader"></tr>
@@ -514,13 +539,10 @@
                 </table>
             </div>
         </div>
-
-
-
-
-
     </div>
     </div>
+
+
 
     <script src="main.js"></script>
 
