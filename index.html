@@ -79,7 +79,7 @@
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxN0bT5jP0AS-4SYQNVw69f-enB2cYEJ7A8N4cutH6kCagxoiv0-xaFzPYSu6T3nR7b/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyX03pNjbjfgarY796jAWfGzi6fQLGQD5jf6tpL0zx4vbzUhdL_j7Il5TtfaCdcVe1s/exec";
 
     function showBox(boxId) {
       document.querySelectorAll('.glass-box').forEach(box => {
@@ -116,28 +116,38 @@
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: `mode=loginOnly&username=${encodeURIComponent(username)}&branch=${encodeURIComponent(branch)}`
           })
-            .then(res => res.text())
+            .then(res => {
+              // ตรวจสอบว่า Response สำเร็จ (HTTP 200 OK)
+              if (!res.ok) {
+                // ถ้าไม่สำเร็จ อาจจะอ่านข้อความ Error จากเซิร์ฟเวอร์
+                return res.text().then(text => { throw new Error(text) });
+              }
+              // ✅ เปลี่ยนเป็น .json() เพื่อ parse response ที่เป็น JSON
+              return res.json();
+            })
             .then(data => {
-              console.log("Response from server:", data);
+              console.log("Response from server:", data); // แสดงข้อมูลที่ Parse แล้วใน Console
 
-              if (data.startsWith("✅ Login successful|")) {
-                try {
-                  const jsonString = data.split("✅ Login successful|")[1];
-                  const json = JSON.parse(jsonString);
+              // ✅ ตรวจสอบ status จาก JSON ที่ได้รับ
+              if (data.status === "success") {
+                // หาก Login สำเร็จ
+                localStorage.setItem("username", username);
+                localStorage.setItem("branch", branch);
+                localStorage.setItem("permission", data.permission || "-"); // ดึง permission จาก data object
 
-                  localStorage.setItem("username", username);
-                  localStorage.setItem("branch", branch);
-                  localStorage.setItem("permission", json.permission || "-");
-
-                  window.location.href = "Home.html";
-                } catch (err) {
-                  alert("❌ ไม่สามารถอ่านข้อมูลผู้ใช้: " + err);
-                }
+                alert("✅ เข้าสู่ระบบสำเร็จ!"); // แสดงข้อความที่อ่านง่ายขึ้น
+                window.location.href = "Home.html"; // เปลี่ยนหน้าไปที่ Home.html
               } else {
-                alert(data);
+                // หาก Login ไม่สำเร็จ แสดงข้อความที่ Apps Script ส่งมา
+                alert("❌ เข้าสู่ระบบไม่สำเร็จ: " + data.message);
                 document.getElementById("loaderOverlay").classList.add("hidden");
               }
             })
+            .catch(error => {
+              console.error("Error during login fetch:", error);
+              alert("❌ เกิดข้อผิดพลาดในการเชื่อมต่อ: " + error.message);
+              document.getElementById("loaderOverlay").classList.add("hidden");
+            });
         }
       }, 35);
     }
@@ -158,14 +168,29 @@
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `mode=register&username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&branch=${encodeURIComponent(branch)}&permission=${encodeURIComponent(permission)}`
       })
-        .then(res => res.text())
+        .then(res => {
+          // ตรวจสอบว่า Response สำเร็จ (HTTP 200 OK)
+          if (!res.ok) {
+            return res.text().then(text => { throw new Error(text) });
+          }
+          // ✅ เปลี่ยนเป็น .json() เพื่อ parse response ที่เป็น JSON
+          return res.json();
+        })
         .then(data => {
-          alert(data);
-          if (data.includes("✅")) {
-            showBox('loginBox');
+          console.log("Response from server:", data); // แสดงข้อมูลที่ Parse แล้วใน Console
+
+          // ✅ ตรวจสอบ status จาก JSON ที่ได้รับ
+          if (data.status === "success") {
+            alert("✅ ลงทะเบียนสำเร็จ: " + data.message);
+            showBox('loginBox'); // กลับไปหน้า Login
+          } else {
+            alert("❌ ลงทะเบียนไม่สำเร็จ: " + data.message);
           }
         })
-        .catch(err => alert("❌ Error: " + err));
+        .catch(err => {
+          console.error("Error during registration fetch:", err);
+          alert("❌ Error: " + err.message);
+        });
     }
   </script>
 
