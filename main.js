@@ -72,12 +72,21 @@ function showForm(type) {
                 loadAllData(type);
             }
 
+            // ✅ เรียกฟังก์ชันสร้างตารางแบบไดนามิก
+            if (type.endsWith("plan")) {
+                createDynamicTableUI(type, `dynamicTable-${type}`);
+            }
+
             $(target).find('.multi-select').select2({
                 placeholder: "เลือกรหัสรายการ",
                 allowClear: true
             });
         }
     }
+
+
+
+
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -131,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append("username", username);
 
 
-            fetch("https://script.google.com/macros/s/AKfycbxN0bT5jP0AS-4SYQNVw69f-enB2cYEJ7A8N4cutH6kCagxoiv0-xaFzPYSu6T3nR7b/exec", {
+            fetch("https://script.google.com/macros/s/AKfycbzs6KoJyWaRc8NrikwRUwYOHx4yTpEbXSiinLVYsF6zAPYuPMd__bA8Yr-KtHDX2kde/exec", {
                 method: "POST",
                 body: formData
             })
@@ -170,12 +179,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (approveMenu) {
             approveMenu.style.display = "none";
         }
-    
+
 
         // ✅ ซ่อนเมนูปฏิทิน ถ้าไม่ใช่ Admin หรือ AV/AVP
         //const calendarMenu = document.getElementById("calendarMenu");
         //if (calendarMenu) {
-           // calendarMenu.style.display = "none";
+        // calendarMenu.style.display = "none";
         //}
     }
 
@@ -347,7 +356,7 @@ function renderApproveTable(data) {
 }
 
 function updateStatus(rowIndex, newStatus, type) {
-    fetch("https://script.google.com/macros/s/AKfycbxN0bT5jP0AS-4SYQNVw69f-enB2cYEJ7A8N4cutH6kCagxoiv0-xaFzPYSu6T3nR7b/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbzs6KoJyWaRc8NrikwRUwYOHx4yTpEbXSiinLVYsF6zAPYuPMd__bA8Yr-KtHDX2kde/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `mode=update&type=${type}&rowIndex=${rowIndex + 2}&status=${encodeURIComponent(newStatus)}`
@@ -382,4 +391,239 @@ function updateCell(cell, row, col) {
             console.error("❌ Error saving cell:", err);
         })
         .updateSheetCell(newValue, row, col);
+}
+
+
+
+function createDynamicTableUI(formId, tableId) {
+    const table = document.getElementById(tableId);
+    if (!table) {
+        console.error("❌ ไม่พบ table ID:", tableId);
+        return;
+    }
+
+    table.innerHTML = ''; // ล้างตารางก่อนเริ่มใหม่
+    let selectedCells = [];
+
+    function toggleCellSelection(event, cell) {
+        if (event.ctrlKey || event.metaKey) {
+            // กด Ctrl = เพิ่มหรือเอาออกจากการเลือก
+            if (cell.classList.contains("selected")) {
+                cell.classList.remove("selected");
+                selectedCells = selectedCells.filter(c => c !== cell);
+            } else {
+                cell.classList.add("selected");
+                selectedCells.push(cell);
+            }
+        } else {
+            // ไม่กด Ctrl = ล้าง selection เดิมแล้วเลือกใหม่
+            clearSelection();
+            cell.classList.add("selected");
+            selectedCells.push(cell);
+        }
+    }
+
+    function createInitialTable(rows = 5, cols = 5) {
+        // 🔵 สร้าง thead
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+        for (let i = 0; i < cols; i++) {
+            const th = document.createElement("th");
+            th.textContent = `Header ${i + 1}`;
+            headerRow.appendChild(th);
+        }
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // 🔵 สร้าง tbody
+        const tbody = document.createElement("tbody");
+        for (let r = 0; r < rows; r++) {
+            const row = document.createElement("tr");
+            for (let c = 0; c < cols; c++) {
+                const td = document.createElement("td");
+                td.contentEditable = true;
+                td.innerText = `R${r + 1}C${c + 1}`;
+                td.addEventListener('click', (event) => toggleCellSelection(event, td));
+                row.appendChild(td);
+            }
+            tbody.appendChild(row);
+        }
+        table.appendChild(tbody);
+    }
+
+    function addRow() {
+        const tbody = table.querySelector("tbody");
+        const row = document.createElement("tr");
+        const cols = table.rows[0]?.cells.length || 1;
+        const rowIndex = tbody.rows.length;
+        for (let i = 0; i < cols; i++) {
+            const cell = document.createElement("td");
+            cell.contentEditable = true;
+            cell.innerText = `New R${rowIndex + 1}C${i + 1}`;
+            cell.onclick = () => toggleCellSelection(cell);
+            row.appendChild(cell);
+        }
+        tbody.appendChild(row);
+    }
+
+    function addColumn() {
+        const thead = table.querySelector("thead");
+        const tbody = table.querySelector("tbody");
+
+        // เพิ่มใน thead
+        const headerRow = thead.rows[0];
+        const newTh = document.createElement("th");
+        newTh.textContent = `Header ${headerRow.cells.length + 1}`;
+        headerRow.appendChild(newTh);
+
+        // เพิ่มใน tbody
+        for (let r = 0; r < tbody.rows.length; r++) {
+            const cell = document.createElement("td");
+            cell.contentEditable = true;
+            cell.innerText = `New R${r + 1}C${headerRow.cells.length}`;
+            cell.onclick = () => toggleCellSelection(cell);
+            tbody.rows[r].appendChild(cell);
+        }
+    }
+
+    function deleteRow() {
+        const tbody = table.querySelector("tbody");
+        if (tbody.rows.length > 0) {
+            tbody.deleteRow(-1);
+        }
+    }
+
+    function deleteColumn() {
+        const thead = table.querySelector("thead");
+        const tbody = table.querySelector("tbody");
+
+        // ลบหัวตาราง
+        const headerRow = thead.rows[0];
+        if (headerRow.cells.length > 0) {
+            headerRow.deleteCell(-1);
+        }
+
+        // ลบคอลัมน์ใน tbody
+        for (let row of tbody.rows) {
+            if (row.cells.length > 0) {
+                row.deleteCell(-1);
+            }
+        }
+    }
+
+    function mergeCells() {
+        if (selectedCells.length < 2) return alert("เลือกอย่างน้อย 2 เซลล์เพื่อรวม");
+
+        // แยกแถวและคอลัมน์ของแต่ละเซลล์
+        const cellPositions = selectedCells.map(cell => {
+            const row = cell.parentElement;
+            const rowIndex = Array.from(table.rows).indexOf(row);
+            const colIndex = Array.from(row.cells).indexOf(cell);
+            return { cell, rowIndex, colIndex };
+        });
+
+        // 🔍 ตรวจสอบว่าอยู่ในแถวเดียวกัน (แนวนอน)
+        const sameRow = cellPositions.every(p => p.rowIndex === cellPositions[0].rowIndex);
+        const sameCol = cellPositions.every(p => p.colIndex === cellPositions[0].colIndex);
+
+        if (sameRow) {
+            // ✅ แนวนอน → colSpan
+            const first = cellPositions[0].cell;
+            first.colSpan = selectedCells.length;
+            first.innerText = selectedCells.map(c => c.innerText).join(" ");
+            for (let i = 1; i < selectedCells.length; i++) {
+                selectedCells[i].remove();
+            }
+        } else if (sameCol) {
+            // ✅ แนวตั้ง → rowSpan
+            const base = cellPositions.sort((a, b) => a.rowIndex - b.rowIndex)[0];
+            base.cell.rowSpan = selectedCells.length;
+            base.cell.innerText = selectedCells.map(c => c.innerText).join(" ");
+            for (let i = 1; i < cellPositions.length; i++) {
+                const targetRow = table.rows[cellPositions[i].rowIndex];
+                targetRow.deleteCell(cellPositions[i].colIndex);
+            }
+        } else {
+            alert("กรุณาเลือกเซลล์ที่อยู่ในแถวเดียวกันหรือคอลัมน์เดียวกันเท่านั้น");
+        }
+
+        clearSelection();
+    }
+
+    function unmergeCells() {
+        const cell = selectedCells[0];
+        if (cell && cell.colSpan > 1) {
+            const row = cell.parentElement;
+            const index = Array.from(row.cells).indexOf(cell);
+            const span = cell.colSpan;
+            const text = cell.innerText.split(" ");
+            cell.colSpan = 1;
+            for (let i = 1; i < span; i++) {
+                const newCell = row.insertCell(index + i);
+                newCell.contentEditable = true;
+                newCell.innerText = text[i] || "";
+                newCell.onclick = () => toggleCellSelection(newCell);
+            }
+        }
+        clearSelection();
+    }
+
+    function clearSelection() {
+        selectedCells.forEach(cell => cell.classList.remove("selected"));
+        selectedCells = [];
+    }
+
+    // เชื่อมปุ่มกับ formId
+    document.getElementById(`addRowBtn-${formId}`)?.addEventListener('click', addRow);
+    document.getElementById(`addColumnBtn-${formId}`)?.addEventListener('click', addColumn);
+    document.getElementById(`deleteRowButton-${formId}`)?.addEventListener('click', deleteRow);
+    document.getElementById(`deleteColumnButton-${formId}`)?.addEventListener('click', deleteColumn);
+    document.getElementById(`mergeButton-${formId}`)?.addEventListener('click', mergeCells);
+    document.getElementById(`unmergeButton-${formId}`)?.addEventListener('click', unmergeCells);
+
+    document.getElementById("saveTableBtn-chickenplan").addEventListener("click", () => {
+        saveTableToGoogleSheet("chickenplan", "dynamicTable-chickenplan");
+    });
+
+    document.getElementById("saveTableBtn-pigplan").addEventListener("click", () => {
+        saveTableToGoogleSheet("pigplan", "dynamicTable-pigplan");
+    });
+
+    document.getElementById("saveTableBtn-duckplan").addEventListener("click", () => {
+        saveTableToGoogleSheet("duckplan", "dynamicTable-duckplan");
+    });
+
+    // เริ่มต้นสร้างตาราง
+    createInitialTable();
+}
+
+// Save ตาราง แผนไป google sheet
+function saveTableToGoogleSheet(formId, tableId) {
+  const table = document.getElementById(tableId);
+  const rows = table.querySelectorAll("tr");
+  const tableData = [];
+
+  rows.forEach(row => {
+    const rowData = [];
+    const cells = row.querySelectorAll("th, td");
+    cells.forEach(cell => {
+      rowData.push(cell.innerText.trim());
+    });
+    tableData.push(rowData);
+  });
+
+  const formData = new URLSearchParams();
+  formData.append("formId", formId);
+  formData.append("tableData", JSON.stringify(tableData));
+
+  fetch("https://script.google.com/macros/s/AKfycbwnArBnJIEKXt7c9zzKrpIwOIPK3bIEeko2ky4T7dIY-4TneaAazdZqVlPt17_NOUg8/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: formData
+  })
+  .then(res => res.text())
+  .then(result => alert("📤 " + result))
+  .catch(err => alert("❌ ส่งข้อมูลล้มเหลว: " + err));
 }
