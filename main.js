@@ -460,7 +460,7 @@ function createDynamicTableUI(formId, tableId) {
             const cell = document.createElement("td");
             cell.contentEditable = true;
             cell.innerText = `New R${rowIndex + 1}C${i + 1}`;
-            cell.onclick = () => toggleCellSelection(cell);
+            cell.addEventListener('click', (event) => toggleCellSelection(event, cell)); 
             row.appendChild(cell);
         }
         tbody.appendChild(row);
@@ -481,7 +481,7 @@ function createDynamicTableUI(formId, tableId) {
             const cell = document.createElement("td");
             cell.contentEditable = true;
             cell.innerText = `New R${r + 1}C${headerRow.cells.length}`;
-            cell.onclick = () => toggleCellSelection(cell);
+            cell.addEventListener('click', (event) => toggleCellSelection(event, cell)); 
             tbody.rows[r].appendChild(cell);
         }
     }
