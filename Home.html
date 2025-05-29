@@ -37,6 +37,21 @@
                 </ul>
             </li>
 
+            <li class="has-submenu">📝 เมนูแผน
+                <ul class="submenu">
+                    <li onclick="showForm('chickenplan')">🐔 แผนอาหารไก่</li>
+                    <li onclick="showForm('pigplan')">🐷 แผนอาหารสุกร</li>
+                    <li onclick="showForm('duckplan')">🦆 แผนอาหารเป็ด</li>
+                    <li onclick="showForm('quailplan')">🪿 แผนอาหารนกกระทา</li>
+                    <li onclick="showForm('rabbitplan')">🐰 แผนอาหารกระต่าย</li>
+                    <li onclick="showForm('cowplan')">🐄 แผนอาหารโค</li>
+                    <li onclick="showForm('ostrichplan')">🦃 แผนอาหารนกกระจอกเทศ</li>
+                    <li onclick="showForm('goatplan')">🐐 แผนอาหารแพะ</li>
+                    <li onclick="showForm('sheepplan')">🐑 แผนอาหารแกะ</li>
+                    <li onclick="showForm('cricketplan')">🦗 แผนอาหารจิ้งหรีด</li>
+                </ul>
+            </li>
+
             <li class="has-submenu" id="approveMenu">
                 ✅ เมนู Approve
                 <ul class="submenu">
@@ -81,7 +96,7 @@
             <h2 style="margin-top: 0;">📅 แผนส่งตัวอย่างวิเคราะห์</h2>
             <iframe id="form-calendar"
                 style="width: 98%; height: 90vh; border: none; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1);"
-                src="https://script.google.com/macros/s/AKfycbxfM6FeXFNiNhMTpNvAvgZyFcIpi16BQvkN5ZnDJAvtW64ZD-kRyLkgNuSH8inuL2OR/exec"
+                src="https://script.google.com/macros/s/AKfycby5C2a6vF_ZSI2yDWAzmPw-a1gvq6XxQaZWN6jdp3uU2BVqYrrrTxiYrPH1ih-p5YBg/exec"
                 frameborder="0" allowfullscreen>
             </iframe>
         </div>
@@ -539,12 +554,71 @@
                 </table>
             </div>
         </div>
+
+
+
+        <div id="form-chickenplan" class="form-container">
+            <h2>🐔 แผนอาหารไก่</h2>
+            <div id="controls">
+                <button id="addRowBtn-chickenplan">➕เพิ่มแถว</button>
+                <button id="addColumnBtn-chickenplan">➕เพิ่มคอลัมน์</button>
+                <button id="deleteRowButton-chickenplan">🗑️ลบแถว</button>
+                <button id="deleteColumnButton-chickenplan">🗑️ลบคอลัมน์</button>
+                <button id="mergeButton-chickenplan">🔗รวมเซลล์</button>
+                <button id="unmergeButton-chickenplan">🔓แยกเซลล์</button>
+                <button id="saveTableBtn-chickenplan">💾 บันทึกข้อมูลแผน</button>
+            </div>
+            <table id="dynamicTable-chickenplan"></table>
+        </div>
+
+        <!-- 🐷 ฟอร์มสุกร -->
+        <div id="form-pigplan" class="form-container" style="display: none;">
+            <h2>🐷 แผนอาหารสุกร </h2>
+            <div class="controls">
+                <button id="addRowBtn-pigplan">➕เพิ่มแถว</button>
+                <button id="addColumnBtn-pigplan">➕เพิ่มคอลัมน์</button>
+                <button id="deleteRowButton-pigplan">🗑️ลบแถว</button>
+                <button id="deleteColumnButton-pigplan">🗑️ลบคอลัมน์</button>
+                <button id="mergeButton-pigplan">🔗รวมเซลล์</button>
+                <button id="unmergeButton-pigplan">🔓แยกเซลล์</button>
+                <button id="saveTableBtn-pigplan">💾 บันทึกข้อมูลแผน</button>
+            </div>
+            <table id="dynamicTable-pigplan"></table>
+
+        </div>
+
+        <!-- 🦆 ฟอร์มเป็ด -->
+        <div id="form-duckplan" class="form-container" style="display: none;">
+            <h2>🦆 แผนอาหารเป็ด </h2>
+            <div class="controls">
+                 <button id="addRowBtn-duckplan">➕เพิ่มแถว</button>
+                <button id="addColumnBtn-duckplan">➕เพิ่มคอลัมน์</button>
+                <button id="deleteRowButton-duckplan">🗑️ลบแถว</button>
+                <button id="deleteColumnButton-duckplan">🗑️ลบคอลัมน์</button>
+                <button id="mergeButton-duckplan">🔗รวมเซลล์</button>
+                <button id="unmergeButton-duckplan">🔓แยกเซลล์</button>
+                <button id="saveTableBtn-duckplan">💾 บันทึกข้อมูลแผน</button>
+            </div>
+             <table id="dynamicTable-duckplan"></table>
+
+        </div>
     </div>
-    </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
     <script src="main.js"></script>
+
 
 </body>
 
