@@ -48,7 +48,7 @@ body {
 .main-content {
   flex: 1;
   padding: 30px;
-  margin-left: 270px;
+  margin-left: 270px; 
   /* เว้นที่ด้านซ้ายให้พอดีกับ sidebar */
   overflow-y: auto;
 }
@@ -134,7 +134,7 @@ button:hover {
   background-color: #1e8449;
 }
 
-
+             
 @media (max-width: 768px) {
   .form-row {
     flex-direction: column;
@@ -362,6 +362,78 @@ button:hover {
 /* ปรับตารางให้มีความกว้างขั้นต่ำ (เลื่อนซ้าย-ขวาได้) */
 #approveTable {
     min-width: 1800px;
+}
+
+
+
+
+
+table thead th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}
+
+
+
+[id^="dynamicTable"] {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+[id^="dynamicTable"] thead {
+  background-color: #007bff;
+  color: white;
+}
+
+[id^="dynamicTable"] th {
+  padding: 14px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  border-right: 1px solid #e0e0e0;
+}
+
+[id^="dynamicTable"] td {
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  border-top: 1px solid #e9ecef;
+  border-right: 1px solid #e9ecef;
+  word-break: break-word;
+}
+
+[id^="dynamicTable"] tr:nth-child(even) td {
+  background-color: #f8f9fa;
+}
+
+[id^="dynamicTable"] tr:hover td {
+  background-color: #e9f5ff;
+}
+
+[id^="dynamicTable"] td:last-child,
+[id^="dynamicTable"] th:last-child {
+  border-right: none;
+}
+
+
+
+td.selected {
+  background-color: #ffe082;  /* สีเหลืองอ่อน */
+  border: 2px solid #f57c00;  /* ขอบสีส้ม */
+}
+.selected {
+  background-color: #ffe082 !important; /* สีเหลืองอ่อน */
+  outline: 2px solid #ff9800;
 }
 
 
