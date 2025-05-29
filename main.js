@@ -430,6 +430,8 @@ function createDynamicTableUI(formId, tableId) {
         for (let i = 0; i < cols; i++) {
             const th = document.createElement("th");
             th.textContent = `Header ${i + 1}`;
+            th.contentEditable = true; // ✅ ให้แก้ไขชื่อได้
+            th.addEventListener("click", (event) => toggleCellSelection(event, th)); // ✅ ให้เลือกได้
             headerRow.appendChild(th);
         }
         thead.appendChild(headerRow);
@@ -460,7 +462,7 @@ function createDynamicTableUI(formId, tableId) {
             const cell = document.createElement("td");
             cell.contentEditable = true;
             cell.innerText = `New R${rowIndex + 1}C${i + 1}`;
-            cell.addEventListener('click', (event) => toggleCellSelection(event, cell)); 
+            cell.addEventListener('click', (event) => toggleCellSelection(event, cell));
             row.appendChild(cell);
         }
         tbody.appendChild(row);
@@ -481,7 +483,7 @@ function createDynamicTableUI(formId, tableId) {
             const cell = document.createElement("td");
             cell.contentEditable = true;
             cell.innerText = `New R${r + 1}C${headerRow.cells.length}`;
-            cell.addEventListener('click', (event) => toggleCellSelection(event, cell)); 
+            cell.addEventListener('click', (event) => toggleCellSelection(event, cell));
             tbody.rows[r].appendChild(cell);
         }
     }
@@ -562,7 +564,7 @@ function createDynamicTableUI(formId, tableId) {
                 const newCell = row.insertCell(index + i);
                 newCell.contentEditable = true;
                 newCell.innerText = text[i] || "";
-                newCell.onclick = () => toggleCellSelection(newCell);
+                newCell.addEventListener("click", (event) => toggleCellSelection(event, newCell));
             }
         }
         clearSelection();
@@ -599,31 +601,31 @@ function createDynamicTableUI(formId, tableId) {
 
 // Save ตาราง แผนไป google sheet
 function saveTableToGoogleSheet(formId, tableId) {
-  const table = document.getElementById(tableId);
-  const rows = table.querySelectorAll("tr");
-  const tableData = [];
+    const table = document.getElementById(tableId);
+    const rows = table.querySelectorAll("tr");
+    const tableData = [];
 
-  rows.forEach(row => {
-    const rowData = [];
-    const cells = row.querySelectorAll("th, td");
-    cells.forEach(cell => {
-      rowData.push(cell.innerText.trim());
+    rows.forEach(row => {
+        const rowData = [];
+        const cells = row.querySelectorAll("th, td");
+        cells.forEach(cell => {
+            rowData.push(cell.innerText.trim());
+        });
+        tableData.push(rowData);
     });
-    tableData.push(rowData);
-  });
 
-  const formData = new URLSearchParams();
-  formData.append("formId", formId);
-  formData.append("tableData", JSON.stringify(tableData));
+    const formData = new URLSearchParams();
+    formData.append("formId", formId);
+    formData.append("tableData", JSON.stringify(tableData));
 
-  fetch("https://script.google.com/macros/s/AKfycbwnArBnJIEKXt7c9zzKrpIwOIPK3bIEeko2ky4T7dIY-4TneaAazdZqVlPt17_NOUg8/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: formData
-  })
-  .then(res => res.text())
-  .then(result => alert("📤 " + result))
-  .catch(err => alert("❌ ส่งข้อมูลล้มเหลว: " + err));
+    fetch("https://script.google.com/macros/s/AKfycbwnArBnJIEKXt7c9zzKrpIwOIPK3bIEeko2ky4T7dIY-4TneaAazdZqVlPt17_NOUg8/exec", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formData
+    })
+        .then(res => res.text())
+        .then(result => alert("📤 " + result))
+        .catch(err => alert("❌ ส่งข้อมูลล้มเหลว: " + err));
 }
